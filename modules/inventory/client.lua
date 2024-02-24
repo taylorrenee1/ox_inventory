@@ -339,6 +339,35 @@ local function nearbyStash(self)
 	DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, 0, true, false, false, false)
 end
 
+local allStashes = lib.callback.await("ox_inventory:server:stashdata", false)
+
+function getClosestStash()
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed)
+    local closestStash = nil
+    local closestDistance = math.huge
+
+    for stashId, stashData in pairs(allStashes) do 
+        if stashData.coords then 
+            local stashCoords = vector3(stashData.coords.x, stashData.coords.y, stashData.coords.z)
+            local distance = #(playerCoords - stashCoords)
+
+            if distance < closestDistance then
+                closestDistance = distance
+                closestStash = stashId
+            end
+        end
+    end
+
+    if closestStash and closestDistance < 2 then 
+        return closestStash
+    else
+        return nil 
+    end
+end
+
+exports('getClosestStash', getClosestStash)
+
 Inventory.Stashes = setmetatable(lib.load('data.stashes'), {
 	__call = function(self)
 		for id, stash in pairs(self) do

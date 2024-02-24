@@ -90,6 +90,10 @@ for _, stash in pairs(lib.load('data.stashes')) do
 	}
 end
 
+lib.callback.register("ox_inventory:server:stashdata", function(source, data)
+	return RegisteredStashes
+end)
+
 local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 
 ---Atempts to lazily load inventory data from the database or create a new player-owned instance for "personal" stashes
